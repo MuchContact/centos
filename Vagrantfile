@@ -13,7 +13,6 @@ Vagrant.configure("2") do |config|
   # Every Vagrant development environment requires a box. You can search for
   # boxes at https://atlas.hashicorp.com/search.
   config.vm.box = "centos/7"
-  config.vm.hostname = "centos7"
 
   # Disable automatic box update checking. If you disable this, then
   # boxes will only be checked for updates when the user runs
@@ -27,8 +26,16 @@ Vagrant.configure("2") do |config|
 
   # Create a private network, which allows host-only access to the machine
   # using a specific IP.
-  config.vm.network "private_network", ip: "192.168.50.100"
-
+  config.vm.define "centos01" do |centos01|
+    centos01.vm.network "private_network", ip: "192.168.50.100"
+    # centos01.vm.hostname = "centos01"
+  end
+  config.vm.define "centos02" do |centos02|
+    centos02.vm.network "private_network", ip: "192.168.50.101"
+  end
+  config.vm.define "centos03" do |centos03|
+    centos03.vm.network "private_network", ip: "192.168.50.102"
+  end
   # Create a public network, which generally matched to bridged network.
   # Bridged networks make the machine appear as another physical device on
   # your network.
@@ -68,17 +75,20 @@ Vagrant.configure("2") do |config|
   config.vm.provision "shell", inline: <<-SHELL
     # apply ip address
     sudo nmcli connection reload
-    sudo systemctl restart network.service
+    sudo systemctl restart network
 
-    sudo rpm -Uvh https://yum.puppetlabs.com/puppetlabs-release-pc1-el-7.noarch.rpm
-    sudo yum install -y puppet-agent
-    puppet resource service puppet ensure=running enable=true
-    puppet module install garethr/docker
-    puppet apply -e "include 'docker'"
-    # # install and start docker
-    # sudo yum install -y yum-utils
-    # sudo yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
-    # sudo yum -y install docker-ce
-    # sudo systemctl start docker
+    sudo yum install -y ntp
+    sudo systemctl enable ntpd
+    sudo systemctl start ntpd
+    # sudo rpm -Uvh https://yum.puppetlabs.com/puppetlabs-release-pc1-el-7.noarch.rpm
+    # sudo yum install -y puppet-agent
+    # puppet resource service puppet ensure=running enable=true
+    # puppet module install garethr/docker
+    # puppet apply -e "include 'docker'"
+    # install and start docker
+    sudo yum install -y yum-utils
+    sudo yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+    sudo yum -y install docker-ce
+    sudo systemctl start docker
   SHELL
 end

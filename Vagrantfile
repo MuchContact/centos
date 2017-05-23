@@ -32,11 +32,11 @@ Vagrant.configure("2") do |config|
   end
   config.vm.define "centos02" do |centos02|
     centos02.vm.network "private_network", ip: "192.168.50.101"
-    centos01.vm.hostname = "centos02"
+    centos02.vm.hostname = "centos02"
   end
   config.vm.define "centos03" do |centos03|
     centos03.vm.network "private_network", ip: "192.168.50.102"
-    centos01.vm.hostname = "centos03"
+    centos03.vm.hostname = "centos03"
   end
   # Create a public network, which generally matched to bridged network.
   # Bridged networks make the machine appear as another physical device on

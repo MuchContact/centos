@@ -5,6 +5,12 @@
 # configures the configuration version (we support older styles for
 # backwards compatibility). Please don't change it unless you know what
 # you're doing.
+hosts = {
+  "centos01" => "192.168.50.100",
+  "centos02" => "192.168.50.101",
+  "centos03" => "192.168.50.102"
+}
+
 Vagrant.configure("2") do |config|
   # The most common configuration options are documented and commented below.
   # For a complete reference, please see the online documentation at
@@ -26,18 +32,17 @@ Vagrant.configure("2") do |config|
 
   # Create a private network, which allows host-only access to the machine
   # using a specific IP.
-  config.vm.define "centos01" do |centos01|
-    centos01.vm.network "private_network", ip: "192.168.50.100"
-    centos01.vm.hostname = "centos01"
+  hosts.each do |name, ip|
+    config.vm.define name do |machine|
+      machine.vm.hostname = name
+      machine.vm.network :private_network, ip: ip
+      machine.vm.provider "virtualbox" do |v|
+          v.name = name
+      #    #v.customize ["modifyvm", :id, "--memory", 200]
+      end
+    end
   end
-  config.vm.define "centos02" do |centos02|
-    centos02.vm.network "private_network", ip: "192.168.50.101"
-    centos02.vm.hostname = "centos02"
-  end
-  config.vm.define "centos03" do |centos03|
-    centos03.vm.network "private_network", ip: "192.168.50.102"
-    centos03.vm.hostname = "centos03"
-  end
+  
   # Create a public network, which generally matched to bridged network.
   # Bridged networks make the machine appear as another physical device on
   # your network.

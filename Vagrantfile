@@ -20,6 +20,7 @@ Vagrant.configure("2") do |config|
   # boxes at https://atlas.hashicorp.com/search.
   config.vm.box = "centos/7"
 
+  config.vm.provision "file", source: "docker-compose-Linux-x86_64", destination: "docker-compose-Linux-x86_64"
   # Disable automatic box update checking. If you disable this, then
   # boxes will only be checked for updates when the user runs
   # `vagrant box outdated`. This is not recommended.
@@ -42,7 +43,7 @@ Vagrant.configure("2") do |config|
       end
     end
   end
-  
+
   # Create a public network, which generally matched to bridged network.
   # Bridged networks make the machine appear as another physical device on
   # your network.
@@ -100,5 +101,9 @@ Vagrant.configure("2") do |config|
     sudo yum -y install docker-ce
     sudo systemctl enable docker
     sudo systemctl start docker
+
+    # install docker-compose
+    cp docker-compose-Linux-x86_64 /usr/local/bin/docker-compose
+    chmod +x /usr/local/bin/docker-compose
   SHELL
 end

@@ -19,7 +19,11 @@ Vagrant.configure("2") do |config|
   # Every Vagrant development environment requires a box. You can search for
   # boxes at https://atlas.hashicorp.com/search.
   config.vm.box = "centos/7"
-
+  
+  config.ssh.username = 'root'
+  config.ssh.password = 'vagrant'
+  config.ssh.insert_key = 'true'
+  
   config.vm.provision "file", source: "docker-compose-Linux-x86_64", destination: "docker-compose-Linux-x86_64"
   # Disable automatic box update checking. If you disable this, then
   # boxes will only be checked for updates when the user runs
